@@ -39,6 +39,45 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class IconText extends StatelessWidget {
+  const IconText(this.icon, this.text, {super.key});
+  final String text;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: .center,
+      crossAxisAlignment: .center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [Icon(icon), Text(" $text")],
+        ),
+      ],
+    );
+  }
+}
+
+class IconTextButton extends StatelessWidget {
+  const IconTextButton(this.onPressed, this.icon, this.text, {super.key});
+  final String text;
+  final IconData icon;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      key: key,
+      padding: const EdgeInsets.fromLTRB(85, 5, 85, 5),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: IconText(icon, text, key: key),
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -102,19 +141,16 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: .center,
+          crossAxisAlignment: .center,
           children: [
             Row(
               crossAxisAlignment: .center,
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: TextButton(
+                  child: ElevatedButton(
                     onPressed: clickPasteBtn,
-                    child: Row(
-                      mainAxisAlignment: .center,
-                      crossAxisAlignment: .center,
-                      children: [const Icon(Icons.paste), Text(" Paste")],
-                    ),
+                    child: IconText(Icons.paste, "Paste"),
                   ),
                 ),
               ],
@@ -130,35 +166,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: .center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: FloatingActionButton(
-                    onPressed: clickQueueBtn,
-                    tooltip: 'Save to download queue',
-                    child: const Icon(Icons.queue),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: FloatingActionButton(
-                    onPressed: clickDownloadBtn,
-                    tooltip: 'Download',
-                    child: const Icon(Icons.download_for_offline),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: FloatingActionButton(
-                    onPressed: clickBookmarkBtn,
-                    tooltip: 'Bookmark',
-                    child: const Icon(Icons.bookmark_add),
-                  ),
-                ),
-              ],
+            IconTextButton(clickQueueBtn, Icons.queue, "Queue"),
+            IconTextButton(
+              clickDownloadBtn,
+              Icons.download_for_offline,
+              "Download",
             ),
+            IconTextButton(clickQueueBtn, Icons.bookmark_add, "Bookmark"),
           ],
         ),
       ),
