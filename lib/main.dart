@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tiara/request.dart';
 
 void main() {
@@ -75,6 +76,16 @@ class _MyHomePageState extends State<MyHomePage> {
     textControl.text = "";
   }
 
+  void clickPasteBtn() async {
+    ClipboardData? data = await Clipboard.getData('text/plain');
+    if (data != null) {
+      String? clipboardText = data.text;
+      if (clipboardText != null) {
+        textControl.text = clipboardText;
+      }
+    }
+  }
+
   @override
   void dispose() {
     textControl.dispose();
@@ -92,6 +103,22 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: .center,
           children: [
+            Row(
+              crossAxisAlignment: .center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: TextButton(
+                    onPressed: clickPasteBtn,
+                    child: Row(
+                      mainAxisAlignment: .center,
+                      crossAxisAlignment: .center,
+                      children: [const Icon(Icons.paste), Text(" Paste")],
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
               child: TextField(
