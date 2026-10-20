@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tiara/components.dart';
 import 'package:tiara/request.dart';
 
 void main() {
@@ -13,67 +14,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Tiara',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: .fromSeed(
           seedColor: const Color.fromARGB(255, 58, 183, 79),
         ),
       ),
       home: const MyHomePage(title: 'Gown'),
-    );
-  }
-}
-
-class IconText extends StatelessWidget {
-  const IconText(this.icon, this.text, {super.key});
-  final String text;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: .center,
-      crossAxisAlignment: .center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [Icon(icon), Text(" $text")],
-        ),
-      ],
-    );
-  }
-}
-
-class IconTextButton extends StatelessWidget {
-  const IconTextButton(this.onPressed, this.icon, this.text, {super.key});
-  final String text;
-  final IconData icon;
-  final void Function() onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      key: key,
-      padding: const EdgeInsets.fromLTRB(85, 5, 85, 5),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: IconText(icon, text, key: key),
-      ),
     );
   }
 }
