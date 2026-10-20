@@ -45,6 +45,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final textControl = TextEditingController();
+  final logControl  = TextEditingController();
 
   void clickDownloadBtn() {
     requestDownload(textControl.text);
@@ -119,7 +120,18 @@ class _MyHomePageState extends State<MyHomePage> {
               Icons.download_for_offline,
               "Download",
             ),
-            IconTextButton(clickQueueBtn, Icons.bookmark_add, "Bookmark"),
+            IconTextButton(clickBookmarkBtn, Icons.bookmark_add, "Bookmark"),
+            
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: TextField(
+                controller: logControl,
+                autocorrect: false,
+                readOnly: true,
+                stylusHandwritingEnabled: false,
+                maxLines: 5,
+              ),
+            ),
           ],
         ),
       ),
