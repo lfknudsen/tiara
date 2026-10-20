@@ -4,14 +4,18 @@ import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
 
-Future<void> requestDownload(String url) async {
-  print("Clicked download button");
+ListenerClient newClient([int port = 8080]) {
   final channel = ClientChannel(
     'localhost',
-    port: 8080,
+    port: port,
     options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
   );
-  final client = ListenerClient(channel);
+  return ListenerClient(channel);
+}
+
+Future<void> requestDownload(String url) async {
+  print("Clicked download button");
+  final client = newClient();
 
   final Link l = Link(id: uuid.v4(), token: uuid.v7(), url: url);
   try {
@@ -24,12 +28,7 @@ Future<void> requestDownload(String url) async {
 
 Future<void> addToQueue(String url) async {
   print("Clicked queue button");
-  final channel = ClientChannel(
-    'localhost',
-    port: 8080,
-    options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-  );
-  final client = ListenerClient(channel);
+  final client = newClient();
 
   final Link l = Link(id: uuid.v4(), token: uuid.v7(), url: url);
   try {
@@ -42,12 +41,7 @@ Future<void> addToQueue(String url) async {
 
 Future<void> addToBookmark(String url) async {
   print("Clicked bookmark button");
-  final channel = ClientChannel(
-    'localhost',
-    port: 8080,
-    options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
-  );
-  final client = ListenerClient(channel);
+  final client = newClient();
 
   final Link l = Link(id: uuid.v4(), token: uuid.v7(), url: url);
   try {
