@@ -30,10 +30,11 @@ class IconTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       key: key,
-      padding: const EdgeInsets.fromLTRB(85, 5, 85, 5),
+      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
       child: ElevatedButton(
         onPressed: onPressed,
-        child: IconText(icon, text, key: key),
+        style: ElevatedButton.styleFrom(maximumSize: Size(200, 40)),
+        child: IconText(icon, text, key: key)
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:grpc/grpc.dart';
 import 'package:tiara/proto/listen.pbgrpc.dart';
 import 'package:uuid/uuid.dart';
@@ -16,7 +15,7 @@ ListenerClient newGRPCClient([int port = 8080]) {
   return ListenerClient(channel);
 }
 
-Future<void> requestDownload(String url) async {
+Future<bool> requestDownload(String url) async {
   print("Clicked download button");
   final client = newGRPCClient();
 
@@ -24,12 +23,14 @@ Future<void> requestDownload(String url) async {
   try {
     var response = await client.download(l);
     print("Downloaded: ${response.finished}");
+    return response.finished;
   } catch (ex) {
     print(ex);
+    return false;
   }
 }
 
-Future<void> addToQueue(String url) async {
+Future<bool> addToQueue(String url) async {
   print("Clicked queue button");
   final client = newGRPCClient();
 
@@ -37,17 +38,19 @@ Future<void> addToQueue(String url) async {
   try {
     var response = await client.queue(l);
     print("Added to queue: ${response.added}");
+    return response.added;
   } catch (ex) {
     print(ex);
+    return false;
   }
 }
 
-Future<void> addToBookmark(String url, {String? name, String? desc}) async {
+Future<bool> addToBookmark(String url, {String? name, String? desc}) async {
   print("Clicked bookmark button");
   final uri = Uri.http("user:password@localhost:8081", "/graphql", );
   final headers = <String, String>{
-    "Accept": "application/graphql-response+json", //; charset=utf-8",
-    "Content-Type": "application/json",// charset=utf-8",
+    "Accept": "application/graphql-response+json; charset=utf-8",
+    "Content-Type": "application/json; charset=utf-8",
   };
   final newBookmark = <String, String> {
     "url": url,
@@ -67,7 +70,9 @@ Future<void> addToBookmark(String url, {String? name, String? desc}) async {
   try {
     final response = await http.post(uri, headers: headers, body: js);
     print("Response Status: ${response.statusCode}");
+    return response.statusCode == 200;
   } catch (ex) {
     print(ex);
+    return false;
   }
 }
