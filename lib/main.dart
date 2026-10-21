@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: BookmarkPage(title: "Gown"),
+            screen: BookmarkPage(title: "Mark"),
             item: ItemConfig(
               icon: Icon(Icons.bookmark),
               title: "Bookmark",
