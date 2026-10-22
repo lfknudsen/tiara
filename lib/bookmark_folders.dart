@@ -24,32 +24,27 @@ class RefFolder(String name, String guid) {
 }
 
 // Finds all the subdirectories recursively of the given parent folder.
-TreeNode<String> assemble(
-  TreeNode<String> parent,
+List<TreeNode<String>> assemble(
+  String parentGuid,
   Map<String, List<String>> children,
   Map<String, String> names,
 ) {
-  List<String> parentChildren = [];
-  if (children[parent.key] != null && children[parent.key]!.length > 0) {
-    for (final guid in children[parent.key]!) {
-      parentChildren.add(guid);
+  List<TreeNode<String>> output = [];
+  if (children[parentGuid] != null && children[parentGuid]!.isNotEmpty) {
+    for (final guid in children[parentGuid]!) {
+      final name = names[guid];
+      if (name == null) {
+        print("Couldn't find name for GUID $guid");
+        continue;
+      }
+      TreeNode<String> f = TreeNode<String>(data:name, key:guid);
+      for (final c in assemble(f.key, children, names)) {
+        f.add(c);
+      }
+      output.add(f);
     }
   }
-  //print("${parent.guid} has ${parentChildren.length} children.");
-  for (final childGuid in parentChildren) {
-    final name = names[childGuid];
-    if (name == null) {
-      print("Couldn't find name for GUID $childGuid");
-      continue;
-    }
-    TreeNode<String> f = TreeNode<String>(data:name, key:childGuid, parent:parent);
-    parent.add(f);
-    f = assemble(f, children, names);
-    parent.children[childGuid] = f;
-    //parent.children.add(f);
-  }
-
-  return parent;
+  return output;
 }
 
 Future<TreeNode<String>> getFolders() async {
@@ -72,10 +67,15 @@ Future<TreeNode<String>> getFolders() async {
     }
   }
 
-  TreeNode<String> root = TreeNode(data:":root", key:"0", parent:null);
-  Node n = Node(key: root.key, parent:null);
-  root = assemble(root, children, names);
+  TreeNode<String> root = TreeNode(data:"Bookmarks", key:"0", parent:null);
+  for (final c in assemble(root.key, children, names)) {
+    root.add(c);
+  }
   return root;
+}
+
+void onTap() {
+
 }
 
 class BookmarkFolderPage extends StatefulWidget {
@@ -106,8 +106,9 @@ class _BookmarkFolderPageState extends State<BookmarkFolderPage> {
                 tree: snapshot.data!,
                 builder: (context, node) {
                   return ListTile(
-                    title: Text("Item ${node.data} (${node.key})"),
-                    subtitle: Text("Parent: ${node.parent?.key ?? "??????"}"), //Text("Level ${node.level}"),
+                    title: Text("${node.data}"),
+                    subtitle: Text("${node.children.length} children"),
+                    dense: true,
                   );
                 },
               ),
