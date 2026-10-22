@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:tiara/bookmark.dart';
+import 'package:tiara/bookmark_folders.dart';
 import 'package:tiara/home.dart';
 import 'package:tiara/style.dart';
 
@@ -39,6 +40,14 @@ class MyApp extends StatelessWidget {
               title: "Bookmark",
               activeForegroundColor: navBarButtonActive,
               inactiveForegroundColor: navBarButtonInactive,
+            ),
+          ),
+          PersistentTabConfig(
+            screen: BookmarkFolderPage(title: "Mark"),
+            item: ItemConfig(icon: Icon(Icons.folder),
+            title: "Bookmark Folders",
+            activeForegroundColor: navBarButtonActive,
+            inactiveForegroundColor: navBarButtonInactive,
             ),
           ),
           //

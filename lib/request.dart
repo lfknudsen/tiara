@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:grpc/grpc.dart';
+import 'package:tiara/bookmark_folders.dart';
 import 'package:tiara/proto/listen.pbgrpc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
@@ -74,5 +75,36 @@ Future<bool> addToBookmark(String url, {String? name, String? desc}) async {
   } catch (ex) {
     print(ex);
     return false;
+  }
+}
+
+Future<List<FlatFolder>> getBookmarkFolders() async {
+  final uri = Uri.http("user:password@localhost:8081", "/graphql", );
+  final headers = <String, String>{
+    "Accept": "application/graphql-response+json; charset=utf-8",
+    "Content-Type": "application/json; charset=utf-8",
+  };
+
+  final body = <String, Object> {
+    "query":
+     "query { folders {name, guid, child} } ",
+  };
+  final js = jsonEncode(body);
+  print(js);
+  try {
+    final response = await http.post(uri, headers: headers, body: js);
+    print("Response Status: ${response.statusCode}");
+    final body = response.body;
+    final map = jsonDecode(body);
+    final folders = map["data"]["folders"];
+    final List<FlatFolder> output = [];
+    for (final folder in folders) {
+      final f = FlatFolder(folder["name"], folder["guid"], folder["child"]);
+      output.add(f);
+    }
+    return output;
+  } catch (ex) {
+    print(ex);
+    return List.empty();
   }
 }
