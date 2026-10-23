@@ -16,6 +16,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   final urlText = TextEditingController();
   final nameText = TextEditingController();
   final descText = TextEditingController();
+  final previousPage = "";
 
   void clickBookmarkBtn() async {
     final success = await addToBookmark(urlText.text);
@@ -47,6 +48,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
     return Scaffold(
       appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       title: Text(widget.title),
+      leading: BackButton()
       ),
       body: Center
       (child: Column(

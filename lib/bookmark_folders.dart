@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiara/bookmark.dart';
 import 'package:tiara/request.dart';
 
 /// Flat representation of a folder row returned by the GraphQL API.
@@ -60,7 +61,7 @@ Future<FolderNode> getFolders() async {
   final folders = await getBookmarkFolders();
   Map<String, List<String>> children = {};
   Map<String, String> names = {};
-  
+
   // Build lookup maps: parent GUID -> list of child GUIDs, and GUID -> display name
   for (final folder in folders) {
     if (folder.child != "") {
@@ -135,8 +136,13 @@ class _FolderTileState extends State<FolderTile> {
             const SizedBox(width: 8),
             // Placeholder button for adding a bookmark to this folder.
             IconButton.filledTonal(
-              onPressed: () => print(widget.node.name),
-              icon: const Icon(Icons.add_box, size: 20),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const BookmarkPage(title: "New bookmark"),
+                ),
+              ),
+              icon: const Icon(Icons.bookmark_add, size: 20),
             ),
             // Adds a new child folder under this node.
             IconButton.filledTonal(
