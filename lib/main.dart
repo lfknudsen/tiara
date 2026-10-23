@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
-import 'package:tiara/bookmark.dart';
 import 'package:tiara/bookmark_folders.dart';
 import 'package:tiara/home.dart';
 import 'package:tiara/style.dart';

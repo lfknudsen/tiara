@@ -4,9 +4,14 @@ import 'package:tiara/components.dart';
 import 'package:tiara/request.dart';
 
 class BookmarkPage extends StatefulWidget {
-  const BookmarkPage({super.key, required this.title});
+  const BookmarkPage({
+    super.key,
+    required this.title,
+    required this.prevContext,
+  });
 
   final String title;
+  final BuildContext prevContext;
 
   @override
   State<StatefulWidget> createState() => _BookmarkPageState();
@@ -24,6 +29,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
       urlText.text = "";
       nameText.text = "";
       descText.text = "";
+      Navigator.of(widget.prevContext).pop();
     }
   }
 
@@ -46,16 +52,17 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: Text(widget.title),
-      leading: BackButton()
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+        leading: BackButton(),
       ),
-      body: Center
-      (child: Column(
-        mainAxisAlignment: .center, 
-        crossAxisAlignment: .center,
-        children: [
-          Row(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: .center,
+          crossAxisAlignment: .center,
+          children: [
+            Row(
               crossAxisAlignment: .center,
               children: [
                 Padding(
@@ -102,10 +109,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
               ),
             ),
             IconTextButton(clickBookmarkBtn, Icons.bookmark_add, "Bookmark"),
-
-        ],
-        ),)
+          ],
+        ),
+      ),
     );
   }
-
 }

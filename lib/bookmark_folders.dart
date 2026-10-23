@@ -139,7 +139,7 @@ class _FolderTileState extends State<FolderTile> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) =>
-                      const BookmarkPage(title: "New bookmark"),
+                      BookmarkPage(title: "New bookmark", prevContext: context,),
                 ),
               ),
               icon: const Icon(Icons.bookmark_add, size: 20),
