@@ -124,6 +124,8 @@ class _FolderTileState extends State<FolderTile> {
   Widget build(BuildContext context) {
     return ExpansionTile(
       // Horizontal scroll allows long folder names and buttons to fit on narrow screens.
+      // ... in theory. Doesn't seem to actually do anything, but it might be because I'm
+      // testing it on desktop. Idk.
       title: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
