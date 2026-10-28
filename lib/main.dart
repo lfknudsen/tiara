@@ -32,15 +32,6 @@ class MyApp extends StatelessWidget {
               inactiveForegroundColor: navBarButtonInactive,
             ),
           ),
-          //PersistentTabConfig(
-          //  screen: BookmarkPage(title: "Mark"),
-          //  item: ItemConfig(
-          //    icon: Icon(Icons.bookmark),
-          //    title: "Bookmark",
-          //    activeForegroundColor: navBarButtonActive,
-          //    inactiveForegroundColor: navBarButtonInactive,
-          //  ),
-          //),
           PersistentTabConfig(
             screen: BookmarkFolderPage(title: "Mark"),
             item: ItemConfig(icon: Icon(Icons.collections_bookmark),
