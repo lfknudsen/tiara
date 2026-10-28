@@ -46,7 +46,7 @@ Future<bool> addToQueue(String url) async {
   }
 }
 
-Future<bool> addToBookmark(String url, {String? name, String? desc}) async {
+Future<bool> addToBookmark(String url, String parent, {String? name, String? desc}) async {
   print("Clicked bookmark button");
   final uri = Uri.http("user:password@localhost:8081", "/graphql", );
   final headers = <String, String>{
@@ -55,13 +55,14 @@ Future<bool> addToBookmark(String url, {String? name, String? desc}) async {
   };
   final newBookmark = <String, String> {
     "url": url,
+    "parent": parent,
     "name": name ?? "",
     "desc": desc ?? "",
   };
 
   final body = <String, Object> {
     "query":
-     "mutation CreateBookmark(\$newBookmark: NewBookmark!) {createBookmark(input:\$newBookmark){url, name, desc} }",
+     "mutation CreateBookmark(\$newBookmark: NewBookmark!) {createBookmark(input:\$newBookmark) }",
     "variables": <String, Object>{
       "newBookmark": newBookmark
     }
@@ -71,6 +72,7 @@ Future<bool> addToBookmark(String url, {String? name, String? desc}) async {
   try {
     final response = await http.post(uri, headers: headers, body: js);
     print("Response Status: ${response.statusCode}");
+    print("Body: ${response.body}");
     return response.statusCode == 200;
   } catch (ex) {
     print(ex);

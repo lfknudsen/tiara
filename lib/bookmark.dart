@@ -8,10 +8,12 @@ class BookmarkPage extends StatefulWidget {
     super.key,
     required this.title,
     required this.prevContext,
+    required this.parent,
   });
 
   final String title;
   final BuildContext prevContext;
+  final String parent;
 
   @override
   State<StatefulWidget> createState() => _BookmarkPageState();
@@ -23,7 +25,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   final descText = TextEditingController();
 
   void clickBookmarkBtn() async {
-    final success = await addToBookmark(urlText.text, name: nameText.text, desc: descText.text);
+    final success = await addToBookmark(urlText.text, widget.parent, name: nameText.text, desc: descText.text);
     if (success && widget.prevContext.mounted) {
       urlText.text = "";
       nameText.text = "";
