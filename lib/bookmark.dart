@@ -21,11 +21,10 @@ class _BookmarkPageState extends State<BookmarkPage> {
   final urlText = TextEditingController();
   final nameText = TextEditingController();
   final descText = TextEditingController();
-  final previousPage = "";
 
   void clickBookmarkBtn() async {
-    final success = await addToBookmark(urlText.text);
-    if (success) {
+    final success = await addToBookmark(urlText.text, name: nameText.text, desc: descText.text);
+    if (success && widget.prevContext.mounted) {
       urlText.text = "";
       nameText.text = "";
       descText.text = "";

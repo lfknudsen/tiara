@@ -108,3 +108,36 @@ Future<List<FlatFolder>> getBookmarkFolders() async {
     return List.empty();
   }
 }
+
+Future<bool> addToFolders(String name, String? desc) async {
+  if (name.trim().isEmpty) {
+    return false;
+  }
+  final uri = Uri.http("user:password@localhost:8081", "/graphql", );
+  final headers = <String, String>{
+    "Accept": "application/graphql-response+json; charset=utf-8",
+    "Content-Type": "application/json; charset=utf-8",
+  };
+  final newFolder = <String, String> {
+    "name": name.trim(),
+    "desc": (desc ?? "").trim(),
+  };
+
+  final body = <String, Object> {
+    "query":
+     "mutation CreateFolder(\$newFolder: NewFolder!) {createFolder(input:\$newFolder){name, desc} }",
+    "variables": <String, Object>{
+      "newFolder": newFolder
+    }
+  };
+  final js = jsonEncode(body);
+  print(js);
+  try {
+    final response = await http.post(uri, headers: headers, body: js);
+    print("Response Status: ${response.statusCode}");
+    return response.statusCode == 200;
+  } catch (ex) {
+    print(ex);
+    return false;
+  }
+}

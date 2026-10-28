@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiara/bookmark.dart';
+import 'package:tiara/folder.dart';
 import 'package:tiara/request.dart';
 
 /// Flat representation of a folder row returned by the GraphQL API.
@@ -89,7 +90,10 @@ Future<FolderNode> getFolders() async {
 }
 
 /// Callback type for adding a child folder, used to trigger a rebuild at the page level.
-typedef AddChildCallback = void Function(FolderNode parent);
+typedef AddChildCallback = void Function(
+  FolderNode parent,
+  BuildContext context,
+);
 
 /// A single expandable folder tile in the tree.
 /// Uses [StatefulWidget] so that child tiles can delegate add-child actions up to the page level
@@ -118,7 +122,7 @@ class FolderTile extends StatefulWidget {
 class _FolderTileState extends State<FolderTile> {
   // Delegates adding a child folder to the page-level callback so the tree rebuilds.
   void _addFolder() {
-    widget.onAddChild(widget.node);
+    widget.onAddChild(widget.node, context);
   }
 
   @override
@@ -139,7 +143,7 @@ class _FolderTileState extends State<FolderTile> {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) =>
-                      BookmarkPage(title: "New bookmark", prevContext: context,),
+                      BookmarkPage(title: "New bookmark", prevContext: context),
                 ),
               ),
               icon: const Icon(Icons.bookmark_add, size: 20),
@@ -214,11 +218,19 @@ class _BookmarkFolderPageState extends State<BookmarkFolderPage> {
 
   // Called by any [FolderTile] when the user adds a child folder.
   // Generates a unique GUID and inserts the new node, then rebuilds the whole tree.
-  void _onAddChild(FolderNode parent) {
-    final newFolder = FolderNode(name: "New folder", guid: uuid.v4());
-    setState(() {
-      parent.children.add(newFolder);
-    });
+  Future<void> _onAddChild(FolderNode parent, BuildContext context) async {
+    final newName = await Navigator.of(context).push(
+      MaterialPageRoute<String>(
+        builder: (context) =>
+            FolderCreationPage(title: "New folder", prevContext: context),
+      ),
+    );
+    if (newName != null) {
+      final newFolder = FolderNode(name: newName, guid: uuid.v4());
+      setState(() {
+        parent.children.add(newFolder);
+      });
+    }
   }
 
   @override
