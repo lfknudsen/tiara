@@ -7,10 +7,12 @@ class FolderCreationPage extends StatefulWidget {
     super.key,
     required this.title,
     required this.prevContext,
+    required this.parent,
   });
 
   final String title;
   final BuildContext prevContext;
+  final String parent;
 
   @override
   State<StatefulWidget> createState() => _FolderCreationPageState();
@@ -21,7 +23,7 @@ class _FolderCreationPageState extends State<FolderCreationPage> {
   final descText = TextEditingController();
 
   void clickNewFolderBtn() async {
-    final success = await addToFolders(nameText.text, descText.text);
+    final success = await addToFolders(nameText.text, descText.text, widget.parent);
     if (success && widget.prevContext.mounted) {
       final temp = nameText.text;
       nameText.text = "";

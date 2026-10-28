@@ -21,12 +21,15 @@ class FolderNode {
   final String name;
   final String guid;
   var children = <FolderNode>[];
+  final String parent;
 
   FolderNode({
     required this.name,
     required this.guid,
     List<FolderNode>? children,
-  }) : children = children ?? [];
+    required this.parent,
+  }
+  ) : children = children ?? [];
 }
 
 /// Recursively builds a tree of [FolderNode] objects starting from a parent folder.
@@ -48,6 +51,7 @@ List<FolderNode> assemble(
         name: name,
         guid: guid,
         children: assemble(guid, children, names),
+        parent: parentGuid
       );
       output.add(f);
     }
@@ -85,6 +89,7 @@ Future<FolderNode> getFolders() async {
     name: "Bookmarks",
     guid: "0",
     children: assemble("0", children, names),
+    parent: "0",
   );
   return root;
 }
@@ -222,11 +227,11 @@ class _BookmarkFolderPageState extends State<BookmarkFolderPage> {
     final newName = await Navigator.of(context).push(
       MaterialPageRoute<String>(
         builder: (context) =>
-            FolderCreationPage(title: "New folder", prevContext: context),
+            FolderCreationPage(title: "New folder", prevContext: context, parent: parent.guid),
       ),
     );
     if (newName != null) {
-      final newFolder = FolderNode(name: newName, guid: uuid.v4());
+      final newFolder = FolderNode(name: newName, guid: uuid.v4(), parent: parent.guid);
       setState(() {
         parent.children.add(newFolder);
       });

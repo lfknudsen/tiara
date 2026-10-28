@@ -109,7 +109,7 @@ Future<List<FlatFolder>> getBookmarkFolders() async {
   }
 }
 
-Future<bool> addToFolders(String name, String? desc) async {
+Future<bool> addToFolders(String name, String? desc, String parent) async {
   if (name.trim().isEmpty) {
     return false;
   }
@@ -121,11 +121,12 @@ Future<bool> addToFolders(String name, String? desc) async {
   final newFolder = <String, String> {
     "name": name.trim(),
     "desc": (desc ?? "").trim(),
+    "parent": parent,
   };
 
   final body = <String, Object> {
     "query":
-     "mutation CreateFolder(\$newFolder: NewFolder!) {createFolder(input:\$newFolder){name, desc} }",
+     "mutation CreateFolder(\$newFolder: NewFolder!) {createFolder(input:\$newFolder) }",
     "variables": <String, Object>{
       "newFolder": newFolder
     }
@@ -134,7 +135,8 @@ Future<bool> addToFolders(String name, String? desc) async {
   print(js);
   try {
     final response = await http.post(uri, headers: headers, body: js);
-    print("Response Status: ${response.statusCode}");
+    print("Response Status: ${response.statusCode}\n");
+    print("Body: ${response.body}");
     return response.statusCode == 200;
   } catch (ex) {
     print(ex);
