@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
           PersistentTabConfig(
             screen: MyHomePage(title: "Gown"),
             item: ItemConfig(
-              icon: Icon(Icons.file_download),
+              icon: Icon(Icons.cloud_download),
               title: "Download",
               activeForegroundColor: navBarButtonActive,
               inactiveForegroundColor: navBarButtonInactive,
@@ -36,6 +36,14 @@ class MyApp extends StatelessWidget {
             screen: BookmarkFolderPage(title: "Mark"),
             item: ItemConfig(icon: Icon(Icons.collections_bookmark),
             title: "Bookmarks",
+            activeForegroundColor: navBarButtonActive,
+            inactiveForegroundColor: navBarButtonInactive,
+            ),
+          ),
+          PersistentTabConfig(
+            screen: BookmarkFolderPage(title: "Plume"),
+            item: ItemConfig(icon: Icon(Icons.upload_file),
+            title: "Upload",
             activeForegroundColor: navBarButtonActive,
             inactiveForegroundColor: navBarButtonInactive,
             ),
