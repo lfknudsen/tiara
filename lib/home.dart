@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:tiara/components.dart';
 import 'package:tiara/request.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class MyDownloadPage extends StatefulWidget {
+  const MyDownloadPage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -18,10 +18,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyDownloadPage> createState() => _MyDownloadPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyDownloadPageState extends State<MyDownloadPage> {
   final textControl = TextEditingController();
   final logControl = TextEditingController();
 

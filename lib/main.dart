@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       home: PersistentTabView(
         tabs: [
           PersistentTabConfig(
-            screen: MyHomePage(title: "Gown"),
+            screen: MyDownloadPage(title: "Gown"),
             item: ItemConfig(
               icon: Icon(Icons.cloud_download),
               title: "Download",
