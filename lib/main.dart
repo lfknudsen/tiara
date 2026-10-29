@@ -3,6 +3,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:tiara/bookmark_folders.dart';
 import 'package:tiara/download.dart';
 import 'package:tiara/style.dart';
+import 'package:tiara/upload.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: BookmarkFolderPage(title: "Plume"),
+            screen: UploadPage(title: "Plume"),
             item: ItemConfig(icon: Icon(Icons.upload_file),
             title: "Upload",
             activeForegroundColor: navBarButtonActive,
