@@ -97,7 +97,10 @@ class _UploadPageState extends State<UploadPage> {
       children: [
         Row(
           children: [
-            Icon(Icons.description),
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: Icon(Icons.description),
+            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: .start,
