@@ -11,6 +11,7 @@ class UploadPage extends StatefulWidget {
   State<UploadPage> createState() => _UploadPageState();
 }
 
+/// The individual list element.
 class FileTile extends ListTile {
   const FileTile({super.key, required this.file, super.title});
 
