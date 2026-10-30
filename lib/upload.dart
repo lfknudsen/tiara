@@ -11,8 +11,14 @@ class UploadPage extends StatefulWidget {
   State<UploadPage> createState() => _UploadPageState();
 }
 
+class FileTile extends ListTile {
+  const FileTile({super.key, required this.file, super.title});
+
+  final PlatformFile file;
+}
+
 class _UploadPageState extends State<UploadPage> {
-  List<ListTile> files = [];
+  List<FileTile> files = [];
   bool _loading = false;
   String? _error;
 
@@ -21,16 +27,38 @@ class _UploadPageState extends State<UploadPage> {
     super.initState();
   }
 
+  Future<void> removeFile(PlatformFile file) async {
+    try {
+      _loading = true;
+      setState(() {
+        List<FileTile> copy = files;
+        for (int i = 0; i < copy.length; i++) {
+          if (copy[i].file.path == file.path) {
+            copy.removeAt(i);
+            print("Removing #${i + 1}!");
+            break;
+          }
+        }
+        files = copy;
+        _loading = false;
+      });
+    } catch (e) {
+      _error = e.toString();
+      _loading = false;
+    }
+  }
+
   Future<void> chooseFiles() async {
     try {
       _loading = true;
       List<PlatformFile> fileList = await FilePicker.pickFiles();
-      List<ListTile> outputList = [];
+      List<FileTile> outputList = [];
       for (final file in fileList) {
-        final newTile = ListTile(title: Text(file.name));
+        final newTile = newFileTile(null, file);
         outputList.add(newTile);
       }
       setState(() {
+        outputList.addAll(files);
         files = outputList;
         _loading = false;
       });
@@ -40,6 +68,31 @@ class _UploadPageState extends State<UploadPage> {
         _loading = false;
       });
     }
+  }
+
+  FileTile newFileTile(Key? key, PlatformFile src) {
+    final title = Column(
+      mainAxisAlignment: .center,
+      crossAxisAlignment: .center,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.description),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [Text(src.name)],
+              ),
+            ),
+            IconButton(
+              onPressed: () => {removeFile(src)},
+              icon: Icon(Icons.delete),
+            ),
+          ],
+        ),
+      ],
+    );
+    return FileTile(key: key, file: src, title: title);
   }
 
   @override
