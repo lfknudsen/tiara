@@ -27,6 +27,7 @@ class _UploadPageState extends State<UploadPage> {
     super.initState();
   }
 
+  /// Removes the given file from the list.
   Future<void> removeFile(PlatformFile file) async {
     try {
       setState(() {
@@ -37,13 +38,16 @@ class _UploadPageState extends State<UploadPage> {
     }
   }
 
+  /// Opens a file picker and adds any chosen files to the list.
   Future<void> chooseFiles() async {
     try {
       _loading = true;
       List<PlatformFile> fileList = await FilePicker.pickFiles();
+      List<PlatformFile> existing = files.map((elem) => elem.file).toList();
+      fileList.retainWhere((elem) => !existing.contains(elem));
       List<FileTile> outputList = [];
       for (final file in fileList) {
-        final newTile = newFileTile(null, file);
+        final newTile = newFileTile(Key(file.uri.toString()), file);
         outputList.add(newTile);
       }
       setState(() {
@@ -59,6 +63,9 @@ class _UploadPageState extends State<UploadPage> {
     }
   }
 
+  /// Constructor for a FileTile which assembles the correct title field.
+  /// Since pressing the button has to execute a function local to this class,
+  /// we can't just use a factory constructor inside FileTile.
   FileTile newFileTile(Key? key, PlatformFile src) {
     final title = Column(
       mainAxisAlignment: .center,
