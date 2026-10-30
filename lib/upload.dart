@@ -18,8 +18,30 @@ class FileTile extends ListTile {
   final PlatformFile file;
 }
 
+String formatBytes(BigInt i) {
+  String unit = " B";
+  if (i > BigInt.from(10000)) {
+    i = BigInt.from(i / BigInt.from(1000));
+    unit = "KB";
+  }
+  if (i > BigInt.from(10000)) {
+    i = BigInt.from(i / BigInt.from(1000));
+    unit = "MB";
+  }
+  if (i > BigInt.from(10000)) {
+    i = BigInt.from(i / BigInt.from(1000));
+    unit = "GB";
+  }
+  if (i > BigInt.from(10000)) {
+    i = BigInt.from(i / BigInt.from(1000));
+    unit = "TB";
+  }
+  return "$i$unit";
+}
+
 class _UploadPageState extends State<UploadPage> {
   List<FileTile> files = [];
+  BigInt totalSize = BigInt.from(0);
   bool _loading = false;
   String? _error;
 
@@ -33,10 +55,22 @@ class _UploadPageState extends State<UploadPage> {
     try {
       setState(() {
         files = files.where((tile) => tile.file.uri != file.uri).toList();
+        updateTotalSize();
       });
     } catch (e) {
       _error = e.toString();
     }
+  }
+
+  Future<void> updateTotalSize() async {
+    BigInt acc = BigInt.from(0);
+    for (final f in files) {
+      acc += BigInt.from((await f.file.length()) ?? 0);
+    }
+
+    setState(() {
+      totalSize = acc;
+    });
   }
 
   /// Opens a file picker and adds any chosen files to the list.
@@ -54,6 +88,7 @@ class _UploadPageState extends State<UploadPage> {
       setState(() {
         outputList.addAll(files);
         files = outputList;
+        updateTotalSize();
         _loading = false;
       });
     } catch (e) {
@@ -62,6 +97,13 @@ class _UploadPageState extends State<UploadPage> {
         _loading = false;
       });
     }
+  }
+
+  void clearList() {
+    setState(() {
+      files = [];
+      totalSize = BigInt.from(0);
+    });
   }
 
   /// Constructor for a FileTile which assembles the correct title field.
@@ -83,7 +125,8 @@ class _UploadPageState extends State<UploadPage> {
             ),
             IconButton(
               onPressed: () => {removeFile(src)},
-              icon: Icon(Icons.delete),
+              icon: Icon(Icons.remove_circle_outline),
+              color: Color.fromARGB(255, 151, 0, 0),
             ),
           ],
         ),
@@ -94,6 +137,11 @@ class _UploadPageState extends State<UploadPage> {
 
   @override
   Widget build(BuildContext context) {
+    String pluralS = "";
+    if (files.length != 1) {
+      pluralS = "s";
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -104,7 +152,45 @@ class _UploadPageState extends State<UploadPage> {
           mainAxisAlignment: .center,
           crossAxisAlignment: .center,
           children: [
-            IconTextButton(chooseFiles, Icons.attach_file, "Choose files"),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 5, 2.5, 5),
+                  child: ElevatedButton(
+                    onPressed: chooseFiles,
+                    child: IconText(Icons.attach_file, "Choose files"),
+                  ),
+                ),
+                Expanded(child: Column(children: [])),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(2.5, 5, 5, 5),
+                  child: ElevatedButton(
+                    onPressed: chooseFiles,
+                    child: IconText(Icons.upload_file, "Upload"),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(7, 5, 0, 5),
+                  child: Text("${files.length} file$pluralS."),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(7, 5, 0, 5),
+                  child: Text("Total size: ${formatBytes(totalSize)}."),
+                ),
+                Expanded(child: Column(children: [])),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 7, 5),
+                  child: ElevatedButton(
+                    onPressed: clearList,
+                    child: Icon(Icons.remove_circle),
+                  ),
+                ),
+              ],
+            ),
             _loading
                 ? const Center(child: CircularProgressIndicator())
                 : _error != null
