@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:grpc/grpc.dart';
 import 'package:tiara/bookmark_folders.dart';
 import 'package:tiara/proto/listen.pbgrpc.dart';
+import 'package:tiara/util.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -144,14 +145,6 @@ Future<bool> addToFolders(String name, String? desc, String parent) async {
     print(ex);
     return false;
   }
-}
-
-String escapeName(String filename) {
-  filename = filename.replaceAll('\\', '\\\\');
-  filename = filename.replaceAll('"', '\\"');
-  filename = filename.replaceAll('\r', '%0D');
-  filename = filename.replaceAll('\n', '%0A');
-  return filename;
 }
 
 Future<bool> uploadFiles(List<PlatformFile> files) async {

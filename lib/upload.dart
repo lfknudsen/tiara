@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tiara/components.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:tiara/request.dart';
+import 'package:tiara/util.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key, required this.title});
@@ -17,27 +18,6 @@ class FileTile extends ListTile {
   const FileTile({super.key, required this.file, super.title});
 
   final PlatformFile file;
-}
-
-String formatBytes(BigInt i) {
-  String unit = " B";
-  if (i > BigInt.from(10000)) {
-    i = BigInt.from(i / BigInt.from(1000));
-    unit = "KB";
-  }
-  if (i > BigInt.from(10000)) {
-    i = BigInt.from(i / BigInt.from(1000));
-    unit = "MB";
-  }
-  if (i > BigInt.from(10000)) {
-    i = BigInt.from(i / BigInt.from(1000));
-    unit = "GB";
-  }
-  if (i > BigInt.from(10000)) {
-    i = BigInt.from(i / BigInt.from(1000));
-    unit = "TB";
-  }
-  return "$i$unit";
 }
 
 class _UploadPageState extends State<UploadPage> {
