@@ -29,22 +29,11 @@ class _UploadPageState extends State<UploadPage> {
 
   Future<void> removeFile(PlatformFile file) async {
     try {
-      _loading = true;
       setState(() {
-        List<FileTile> copy = files;
-        for (int i = 0; i < copy.length; i++) {
-          if (copy[i].file.path == file.path) {
-            copy.removeAt(i);
-            print("Removing #${i + 1}!");
-            break;
-          }
-        }
-        files = copy;
-        _loading = false;
+        files = files.where((tile) => tile.file.uri != file.uri).toList();
       });
     } catch (e) {
       _error = e.toString();
-      _loading = false;
     }
   }
 
