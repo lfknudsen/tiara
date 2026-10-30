@@ -137,7 +137,12 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   Future<void> clkUploadBtn() async {
-    uploadFiles(files.map((elem) => elem.file).toList());
+    _loading = true;
+    final success = await uploadFiles(files.map((elem) => elem.file).toList());
+    if (success) {
+      clearList();
+    }
+    _loading = false;
   }
 
   @override
