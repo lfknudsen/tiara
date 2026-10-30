@@ -238,6 +238,17 @@ class _UploadPageState extends State<UploadPage> {
       pluralS = "s";
     }
 
+    Widget list;
+    if (_loading) {
+      list = const Center(child: CircularProgressIndicator());
+    } else if (_error != null) {
+      list = Center(child: Text("Error: $_error"));
+    } else if (files.isEmpty) {
+      list = const Center(child: Text("Add files to see them here..."));
+    } else {
+      list = Expanded(child: ListView(children: files));
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -287,13 +298,7 @@ class _UploadPageState extends State<UploadPage> {
                 ),
               ],
             ),
-            _loading
-                ? const Center(child: CircularProgressIndicator())
-                : _error != null
-                ? Center(child: Text("Error: $_error"))
-                : files == []
-                ? const Center(child: Text("Add files to see them here..."))
-                : Expanded(child: ListView(children: files)),
+            list,
           ],
         ),
       ),

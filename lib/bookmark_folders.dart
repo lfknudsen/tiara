@@ -28,8 +28,7 @@ class FolderNode {
     required this.guid,
     List<FolderNode>? children,
     required this.parent,
-  }
-  ) : children = children ?? [];
+  }) : children = children ?? [];
 }
 
 /// Recursively builds a tree of [FolderNode] objects starting from a parent folder.
@@ -51,7 +50,7 @@ List<FolderNode> assemble(
         name: name,
         guid: guid,
         children: assemble(guid, children, names),
-        parent: parentGuid
+        parent: parentGuid,
       );
       output.add(f);
     }
@@ -147,8 +146,11 @@ class _FolderTileState extends State<FolderTile> {
             IconButton.filledTonal(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) =>
-                      BookmarkPage(title: "New bookmark", prevContext: context, parent: widget.node.guid),
+                  builder: (context) => BookmarkPage(
+                    title: "New bookmark",
+                    prevContext: context,
+                    parent: widget.node.guid,
+                  ),
                 ),
               ),
               icon: const Icon(Icons.bookmark_add, size: 20),
@@ -226,12 +228,19 @@ class _BookmarkFolderPageState extends State<BookmarkFolderPage> {
   Future<void> _onAddChild(FolderNode parent, BuildContext context) async {
     final newName = await Navigator.of(context).push(
       MaterialPageRoute<String>(
-        builder: (context) =>
-            FolderCreationPage(title: "New folder", prevContext: context, parent: parent.guid),
+        builder: (context) => FolderCreationPage(
+          title: "New folder",
+          prevContext: context,
+          parent: parent.guid,
+        ),
       ),
     );
     if (newName != null) {
-      final newFolder = FolderNode(name: newName, guid: uuid.v4(), parent: parent.guid);
+      final newFolder = FolderNode(
+        name: newName,
+        guid: uuid.v4(),
+        parent: parent.guid,
+      );
       setState(() {
         parent.children.add(newFolder);
       });
@@ -240,6 +249,19 @@ class _BookmarkFolderPageState extends State<BookmarkFolderPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget body;
+    if (_loading) {
+      body = const Center(child: CircularProgressIndicator());
+    } else if (_error != null) {
+      body = Center(child: Text("Error: $_error"));
+    } else if (_root == null) {
+      body = const Center(child: Text("No folders found"));
+    } else {
+      body = ListView(
+        children: [FolderTile(node: _root!, onAddChild: _onAddChild)],
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -247,15 +269,7 @@ class _BookmarkFolderPageState extends State<BookmarkFolderPage> {
       ),
       // Show a loading spinner while data loads, an error message on failure,
       // or the full tree wrapped in a [ListView] for vertical scrolling.
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
-          ? Center(child: Text("Error: $_error"))
-          : _root == null
-          ? const Center(child: Text("No folders found"))
-          : ListView(
-              children: [FolderTile(node: _root!, onAddChild: _onAddChild)],
-            ),
+      body: body,
     );
   }
 }
