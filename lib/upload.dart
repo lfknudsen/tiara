@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tiara/components.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:tiara/request.dart';
+import 'package:tiara/style.dart';
 import 'package:tiara/util.dart';
 
 class UploadPage extends StatefulWidget {
@@ -11,6 +12,106 @@ class UploadPage extends StatefulWidget {
 
   @override
   State<UploadPage> createState() => _UploadPageState();
+}
+
+IconData extToIcon(String ext) {
+  while (ext.startsWith('.')) {
+    ext = ext.substring(1);
+  }
+  ext = ext.toLowerCase();
+
+  switch (ext) {
+    case '':
+    case 'exe':
+    case "jar":
+      return iconset.app;
+    case 'ps1':
+    case 'sh':
+    case 'c':
+    case 'h':
+    case 'cpp':
+    case 'hpp':
+    case 'cxx':
+    case 'hxx':
+    case 'cs':
+    case 'dart':
+    case 'go':
+    case 'fs':
+    case 'hs':
+    case 'rs':
+    case 'js':
+    case 'jsx':
+    case 'ts':
+    case 'tsx':
+    case 'java':
+    case 'class':
+    case 'csv':
+    case 'tsv':
+    case 'dll':
+    case 'html':
+    case 'htmlx':
+    case 'php':
+    case 'lua':
+    case 'rb':
+    case 'ru':
+    case 'rgss':
+    case 'py':
+    case 'l':
+    case 'lisp':
+    case 'lsp':
+    case 'cl':
+    case 'fasl':
+    case 'erl':
+    case 'hrl':
+    case 'f90':
+    case 'f':
+    case 'for':
+      return iconset.code;
+    case 'yaml':
+    case 'toml':
+    case 'json':
+    case 'toon':
+    case 'bson':
+    case 'asn1':
+    case 'txt':
+    case 'log':
+    case 'ini':
+      return iconset.plaintext;
+    case 'doc':
+    case 'docx':
+      return iconset.textdoc;
+    case 'ttf':
+      return iconset.fontfile;
+    case 'wav':
+    case 'mp3':
+      return iconset.audio;
+    case 'mkv':
+    case 'mp4':
+    case 'mov':
+      return iconset.video;
+    case 'png':
+    case 'bmp':
+    case 'jpg':
+    case 'jpeg':
+    case 'psd':
+    case 'clip':
+    case 'afi':
+    case 'xkv':
+    case 'gif':
+    case 'ico':
+      return iconset.image;
+    case 'pdf':
+      return iconset.pdf;
+    case 'zip':
+    case '7z':
+    case 'rar':
+    case 'gz':
+    case 'tar':
+    case 'bz2':
+      return iconset.zip;
+    default:
+      return iconset.other;
+  }
 }
 
 /// The individual list element.
@@ -99,7 +200,7 @@ class _UploadPageState extends State<UploadPage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 5),
-              child: Icon(Icons.description),
+              child: Icon(extToIcon(src.extension ?? "")),
             ),
             Expanded(
               child: Column(
