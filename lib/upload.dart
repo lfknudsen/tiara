@@ -155,7 +155,8 @@ class _UploadPageState extends State<UploadPage> {
     });
   }
 
-  /// Opens a file picker and adds any chosen files to the list.
+  /// Opens a file picker and adds any chosen files to the list that
+  /// were not already in the list.
   Future<void> chooseFiles() async {
     try {
       _loading = true;
@@ -220,6 +221,7 @@ class _UploadPageState extends State<UploadPage> {
     return FileTile(key: key, file: src, title: title);
   }
 
+  /// Executed when the 'Upload' button is clicked.
   Future<void> clkUploadBtn() async {
     _loading = true;
     final success = await uploadFiles(files.map((elem) => elem.file).toList());
