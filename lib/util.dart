@@ -3,7 +3,7 @@ String formatBytes(BigInt i) {
     return formatDecimal(i.toDouble());
   }
 
-  String unit = " B";
+  String unit = "B";
   if (i > BigInt.from(10000)) {
     i = BigInt.from(i / BigInt.from(1000));
     unit = "KB";
@@ -20,7 +20,7 @@ String formatBytes(BigInt i) {
     i = BigInt.from(i / BigInt.from(1000));
     unit = "TB";
   }
-  return "$i$unit";
+  return "$i $unit";
 }
 
 String formatDecimal(double i) {
@@ -46,7 +46,7 @@ String formatDecimal(double i) {
   if (truncated.endsWith('.00')) {
     truncated = truncated.substring(0, truncated.length - 3);
   }
-  return "$truncated$unit";
+  return "$truncated $unit";
 }
 
 String escapeName(String filename) {
