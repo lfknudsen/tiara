@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:grpc/grpc.dart';
 import 'package:tiara/bookmark_folders.dart';
 import 'package:tiara/proto/listen.pbgrpc.dart';
@@ -46,26 +49,28 @@ Future<bool> addToQueue(String url) async {
   }
 }
 
-Future<bool> addToBookmark(String url, String parent, {String? name, String? desc}) async {
+Future<bool> addToBookmark(
+  String url,
+  String parent, {
+  String? name,
+  String? desc,
+}) async {
   print("Clicked bookmark button");
-  final uri = Uri.http("user:password@localhost:8081", "/graphql", );
+  final uri = Uri.http("user:password@localhost:8081", "/graphql");
   final headers = <String, String>{
     "Accept": "application/graphql-response+json; charset=utf-8",
     "Content-Type": "application/json; charset=utf-8",
   };
-  final newBookmark = <String, String> {
+  final newBookmark = <String, String>{
     "url": url,
     "parent": parent,
     "name": name ?? "",
     "desc": desc ?? "",
   };
 
-  final body = <String, Object> {
-    "query":
-     "mutation CreateBookmark(\$newBookmark: NewBookmark!) {createBookmark(input:\$newBookmark) }",
-    "variables": <String, Object>{
-      "newBookmark": newBookmark
-    }
+  final body = <String, Object>{
+    "query": "mutation CreateBookmark(\$newBookmark: NewBookmark!) {createBookmark(input:\$newBookmark) }",
+    "variables": <String, Object>{"newBookmark": newBookmark},
   };
   final js = jsonEncode(body);
   print(js);
@@ -81,15 +86,14 @@ Future<bool> addToBookmark(String url, String parent, {String? name, String? des
 }
 
 Future<List<FlatFolder>> getBookmarkFolders() async {
-  final uri = Uri.http("user:password@localhost:8081", "/graphql", );
+  final uri = Uri.http("user:password@localhost:8081", "/graphql");
   final headers = <String, String>{
     "Accept": "application/graphql-response+json; charset=utf-8",
     "Content-Type": "application/json; charset=utf-8",
   };
 
-  final body = <String, Object> {
-    "query":
-     "query { folders {name, guid, child} } ",
+  final body = <String, Object>{
+    "query": "query { folders {name, guid, child} } ",
   };
   final js = jsonEncode(body);
   print(js);
@@ -115,23 +119,20 @@ Future<bool> addToFolders(String name, String? desc, String parent) async {
   if (name.trim().isEmpty) {
     return false;
   }
-  final uri = Uri.http("user:password@localhost:8081", "/graphql", );
+  final uri = Uri.http("user:password@localhost:8081", "/graphql");
   final headers = <String, String>{
     "Accept": "application/graphql-response+json; charset=utf-8",
     "Content-Type": "application/json; charset=utf-8",
   };
-  final newFolder = <String, String> {
+  final newFolder = <String, String>{
     "name": name.trim(),
     "desc": (desc ?? "").trim(),
     "parent": parent,
   };
 
-  final body = <String, Object> {
-    "query":
-     "mutation CreateFolder(\$newFolder: NewFolder!) {createFolder(input:\$newFolder) }",
-    "variables": <String, Object>{
-      "newFolder": newFolder
-    }
+  final body = <String, Object>{
+    "query": "mutation CreateFolder(\$newFolder: NewFolder!) {createFolder(input:\$newFolder) }",
+    "variables": <String, Object>{"newFolder": newFolder},
   };
   final js = jsonEncode(body);
   print(js);
@@ -139,6 +140,35 @@ Future<bool> addToFolders(String name, String? desc, String parent) async {
     final response = await http.post(uri, headers: headers, body: js);
     print("Response Status: ${response.statusCode}\n");
     print("Body: ${response.body}");
+    return response.statusCode == 200;
+  } catch (ex) {
+    print(ex);
+    return false;
+  }
+}
+
+String escapeName(String filename) {
+  filename = filename.replaceAll('\\', '\\\\');
+  filename = filename.replaceAll('"', '\\"');
+  filename = filename.replaceAll('\r', '%0D');
+  filename = filename.replaceAll('\n', '%0A');
+  return filename;
+}
+
+Future<bool> uploadFiles(List<PlatformFile> files) async {
+  final uri = Uri.http("localhost:8083", "/upload_multiple");
+  final req = http.MultipartRequest("POST", uri);
+  for (final file in files) {
+    final mpFile = await http.MultipartFile.fromPath(
+      "files",
+      file.uri.path.substring(1),
+      filename: escapeName(file.name),
+    );
+    req.files.add(mpFile);
+  }
+  try {
+    final response = await req.send();
+    print("Response Status: ${response.statusCode}\n");
     return response.statusCode == 200;
   } catch (ex) {
     print(ex);

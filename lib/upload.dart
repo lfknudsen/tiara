@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tiara/components.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:tiara/request.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key, required this.title});
@@ -135,6 +136,10 @@ class _UploadPageState extends State<UploadPage> {
     return FileTile(key: key, file: src, title: title);
   }
 
+  Future<void> clkUploadBtn() async {
+    uploadFiles(files.map((elem) => elem.file).toList());
+  }
+
   @override
   Widget build(BuildContext context) {
     String pluralS = "";
@@ -165,7 +170,7 @@ class _UploadPageState extends State<UploadPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(2.5, 5, 5, 5),
                   child: ElevatedButton(
-                    onPressed: chooseFiles,
+                    onPressed: clkUploadBtn,
                     child: IconText(Icons.upload_file, "Upload"),
                   ),
                 ),
